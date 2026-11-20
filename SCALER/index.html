@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1767a3">
+  <title>SCALER | Single-Pass Context-Anchored Latent Visual Reasoning</title>
+  <meta name="description" content="SCALER breaks the latent scaling bottleneck with single-pass, context-anchored visual reasoning. Explore the method, experiments, and visual case studies.">
+  <link rel="canonical" href="https://bonjour-codedev.github.io/SCALER/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SCALER: Breaking the Latent Scaling Bottleneck">
+  <meta property="og:description" content="Single-Pass Context-Anchored Latent Visual Reasoning. Method, results, and visualizations.">
+  <meta property="og:url" content="https://bonjour-codedev.github.io/SCALER/">
+  <meta property="og:image" content="https://bonjour-codedev.github.io/SCALER/assets/social.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=5f9c246dd382">
+  <script src="app.js?v=f1e620fc0523" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <nav class="nav container" aria-label="Main navigation">
+    <a class="brand" href="#main" aria-label="SCALER home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 6h22v6H11v5H5zm22 20H5v-6h16v-5h6z"/></svg>SCALER</a>
+    <div class="nav-links"><a href="#method">Method</a><a href="#results">Results</a><a href="#visualization">Visualization</a><a href="#citation">Citation</a></div>
+    <a class="nav-code" href="https://github.com/Bonjour-CodeDev/SCALER-Code" aria-label="SCALER code on GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 20"/></svg><span>Code</span></a>
+  </nav>
+</header>
+<main id="main">
+  <section class="hero">
+    <div class="container">
+      <h1 id="paper-title">
+        <span class="project-name">SCALER</span>
+        <span class="paper-title-main">Breaking the Latent Scaling Bottleneck</span>
+        <span class="paper-title-detail">via Single-Pass Context-Anchored Latent Visual Reasoning</span>
+      </h1>
+      <div class="review-team" aria-label="Authors and affiliations">
+        <div class="review-author-list"><div class="review-author-rows" role="list" aria-label="Authors">
+<div class="review-author-row" role="presentation"><span class="review-author" role="listitem">Chenfeng Wang<sup>1,2</sup></span><span class="review-author" role="listitem">Wei Zhai<sup>1,†</sup></span><span class="review-author" role="listitem">Wei He<sup>2</sup></span><span class="review-author" role="listitem">Xuhan Zhu<sup>2</sup></span><span class="review-author" role="listitem">Chunpeng Zhou<sup>2</sup></span><span class="review-author" role="listitem">Song Yan<sup>1</sup></span><span class="review-author" role="listitem">Qizhen Li<sup>2</sup></span><span class="review-author" role="listitem">Zeyu Zhang<sup>1,2</sup></span></div>
+<div class="review-author-row" role="presentation"><span class="review-author" role="listitem">Shuai Guo<sup>1,2</sup></span><span class="review-author" role="listitem">Yufei Zheng<sup>1,2</sup></span><span class="review-author" role="listitem">Chengjun Yu<sup>1,2</sup></span><span class="review-author" role="listitem">Fan Lu<sup>1</sup></span><span class="review-author" role="listitem">Yang Cao<sup>1</sup></span><span class="review-author" role="listitem">Pengfei Yu<sup>2,†</sup></span><span class="review-author" role="listitem">Zheng-Jun Zha<sup>1</sup></span></div>
+        </div></div>
+        <p class="review-affiliations"><span><sup>1</sup>University of Science and Technology of China</span><span><sup>2</sup>Li Auto Inc.</span></p>
+      </div>
+<figure class="paper-figure" id="figure-motivation">
+  <a class="figure-link" href="assets/motivation-full.webp" data-zoom data-title="The latent scaling bottleneck" aria-label="Enlarge: The latent scaling bottleneck">
+    <img src="assets/motivation.webp" width="2200" height="963" fetchpriority="high" decoding="async" alt="Paradigm comparison: autoregressive and interleaved latent reasoning versus SCALER, with length-scaling accuracy and token novelty curves.">
+    <span class="enlarge-label" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6m-3-3v6"/></svg>Enlarge</span>
+  </a>
+  <figcaption><strong>From longer chains to richer visual evidence.</strong> SCALER anchors each auxiliary token independently to the original visual space in a single forward pass, sustaining high step-wise cosine novelty across 1,000+ tokens and achieving peak accuracy at full spatial resolution.</figcaption>
+</figure>
+    </div>
+  </section>
+
+  <section class="section abstract-section container" id="abstract">
+    <div class="section-title"><p class="eyebrow">The idea</p><h2>Breaking the latent scaling bottleneck</h2></div>
+    <div class="abstract-copy">
+      <p>Does visual latent reasoning genuinely scale as both sequence length and task complexity increase? Evaluating existing methods across task complexity and token budget uncovers a fundamental <strong>Latent Scaling Bottleneck</strong>: existing autoregressive approaches yield modest gains only within short budgets (≤30 tokens) on simple tasks, yet stagnate or degrade on complex tasks and longer sequences due to <strong>Latent Representation Saturation</strong> and <strong>Over-Compressed Supervision Targets</strong> (≥128× pooling).</p>
+      <p>We propose <strong>SCALER</strong>, which introduces a lightweight <em>detransformer</em> that reads full-sequence hidden states and synthesizes an entire spatially aligned auxiliary visual sequence in a single forward pass. Coupled with a three-stage SFT curriculum and <strong>Auxiliary Latent Policy Optimization (ALPO)</strong> for differentiable reinforcement learning, SCALER extends effective latent length by over <strong>30×</strong>, sustains high representational novelty across <strong>1,000+ tokens</strong>, and achieves state-of-the-art open-source accuracy (including <strong>57.84%</strong> on MME-RealWorld-Lite, <strong>+12.09%</strong> over the Qwen2.5-VL-7B backbone and <strong>+10.47%</strong> over GPT-6-luna) with strong out-of-distribution generalization.</p>
+    </div>
+  </section>
+
+  <section class="section section-tinted" id="method">
+    <div class="container">
+      <div class="section-title"><p class="eyebrow">Method</p><h2>Single-pass, context-anchored reasoning</h2><p>The model autonomously decides when to think visually, synthesizes a spatially aligned auxiliary block in one forward pass, and continues reasoning in the updated visual context.</p></div>
+<figure class="paper-figure" id="figure-method">
+  <a class="figure-link" href="assets/method-full.webp" data-zoom data-title="SCALER inference pipeline" aria-label="Enlarge: SCALER inference pipeline">
+    <img src="assets/method.webp" width="2200" height="909" loading="lazy" decoding="async" alt="Natural auxiliary triggering, single-pass detransformer, residual fusion with image features, and continued generation, illustrated with a geometry question.">
+    <span class="enlarge-label" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6m-3-3v6"/></svg>Enlarge</span>
+  </a>
+  <figcaption><strong>Inference pipeline.</strong> The model autonomously emits <code>&lt;auxiliary&gt;</code>. Full-sequence hidden states are mapped by the detransformer in a single pass to visual editing tokens and residually fused with the original visual features: <span class="formula">A = V + g(A₀)</span>. The language model then resumes Phase-2 reasoning with <span class="formula">A</span> in context.</figcaption>
+</figure>
+      <div class="method-notes">
+        <div><h3>Autonomous triggering</h3><p>Starting from the input image and question, the model adaptively triggers auxiliary visual synthesis when fine-grained perception or multi-step spatial reasoning is needed.</p></div>
+        <div><h3>Single-pass synthesis</h3><p>A lightweight two-layer detransformer maps full-sequence hidden states to the entire auxiliary visual sequence in one forward pass, eliminating recursive drift.</p></div>
+        <div><h3>Spatial grounding</h3><p>Query-conditioned visual residuals are fused with original image tokens at full spatial resolution to preserve fine-grained layout and local details.</p></div>
+      </div>
+      <div class="subsection-heading"><h3>Three-stage SFT curriculum &amp; ALPO reinforcement learning</h3><p>Delta-feature reconstruction, weighted trigger learning, and teacher-forcing annealing align the visual branch. ALPO then propagates outcome-level rewards through differentiable latent recomputation.</p></div>
+<figure class="paper-figure" id="figure-training">
+  <a class="figure-link" href="assets/training-full.webp" data-zoom data-title="SCALER training pipeline and ALPO" aria-label="Enlarge: SCALER training pipeline and ALPO">
+    <img src="assets/training.webp" width="2200" height="793" loading="lazy" decoding="async" alt="Three supervised training stages followed by ALPO, with gradients flowing through recomputed auxiliary latents.">
+    <span class="enlarge-label" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6m-3-3v6"/></svg>Enlarge</span>
+  </a>
+  <figcaption><strong>Training pipeline.</strong> Three-stage SFT (detransformer pretraining, weighted trigger learning, and joint reasoning with teacher-forcing annealing) followed by ALPO with differentiable latent recomputation.</figcaption>
+</figure>
+    </div>
+  </section>
+
+  <section class="section container" id="results">
+    <div class="section-title"><p class="eyebrow">Experiments</p><h2>State-of-the-art performance across five benchmarks</h2><p>High-resolution perception, real-world reasoning, and out-of-distribution visual logic (VisualPuzzles). Overall accuracy (%) is shown below.</p></div>
+<div class="results-table-wrap"><table class="results-table"><caption class="sr-only">Overall benchmark accuracy in percent</caption><thead><tr><th scope="col">Model</th><th scope="col">V*Bench</th><th scope="col">HRBench<br>4K</th><th scope="col">HRBench<br>8K</th><th scope="col">MME-RW<br>Lite</th><th scope="col">Visual<br>Puzzles</th></tr></thead><tbody>
+      <tr><th scope="row">GPT-4o <span>Proprietary</span></th><td>67.50</td><td>65.00</td><td>59.60</td><td>45.25</td><td>41.30</td></tr>
+      <tr><th scope="row">GPT-6-luna <span>Proprietary</span></th><td>76.44</td><td>72.75</td><td>66.25</td><td>47.37</td><td>42.38</td></tr>
+      <tr><th scope="row">Qwen2.5-VL-7B <span>Backbone</span></th><td>78.53</td><td>71.50</td><td>63.75</td><td>45.75</td><td>32.71</td></tr>
+      <tr><th scope="row">LVR</th><td>81.15</td><td>69.50</td><td>62.25</td><td>49.66</td><td>28.51</td></tr>
+      <tr><th scope="row">Monet</th><td>83.77</td><td>73.13</td><td>67.13</td><td>52.63</td><td>28.34</td></tr>
+      <tr><th scope="row">HyLaR</th><td>80.10</td><td>73.25</td><td><strong>69.38</strong></td><td>52.74</td><td>30.05</td></tr>
+      <tr><th scope="row">LASER</th><td>76.96</td><td>73.25</td><td>66.13</td><td>50.96</td><td>35.10</td></tr>
+      <tr><th scope="row">UniVLR</th><td>82.70</td><td>73.30</td><td>68.80</td><td>50.70</td><td>32.53</td></tr>
+      <tr class="sft-row"><th scope="row">SCALER-SFT <span>Ours</span></th><td>82.72</td><td>74.25</td><td>66.75</td><td>52.84</td><td>34.16</td></tr>
+      <tr class="ours-row"><th scope="row">SCALER-7B <span>Ours</span></th><td><strong>84.29</strong></td><td><strong>75.25</strong></td><td>68.88</td><td><strong>57.84</strong></td><td><strong>35.27</strong></td></tr>
+      <tr class="delta-row"><th scope="row">Gain over backbone <span>percentage points</span></th><td>+5.76</td><td>+3.75</td><td>+5.13</td><td>+12.09</td><td>+2.56</td></tr>
+    </tbody></table></div>
+    <p class="table-note"><strong>SCALER-7B achieves the highest open-source accuracy on four of the five benchmarks</strong> (improving MME-RealWorld-Lite by <strong>+12.09%</strong> over the Qwen2.5-VL-7B backbone and surpassing GPT-6-luna by <strong>+10.47%</strong>), while leading HRBench-8K Fine-grained Cross-instance Perception (FCP) at <strong>61.25%</strong> (<strong>+10.0%</strong> over HyLaR).</p>
+
+    <div class="subsection-heading" id="scaling"><h3>Breaking the bottleneck across latent length and task complexity</h3><p>Evaluating 4,878 test questions across five complexity tiers (C1–C5) and latent budgets K ∈ {0, 3, 10, 30, 100, 300, 1000} reveals that SCALER sustains positive scaling on complex multi-hop tasks (C4–C5).</p></div>
+<figure class="paper-figure" id="figure-confusion_matrix">
+  <a class="figure-link" href="assets/confusion_matrix-full.webp" data-zoom data-title="Accuracy across latent budgets and task complexity" aria-label="Enlarge: Accuracy across latent budgets and task complexity">
+    <img src="assets/confusion_matrix.webp" width="2200" height="375" loading="lazy" decoding="async" alt="Accuracy heatmaps for Monet, LVR, LASER, UniVLR, and SCALER across five task-complexity levels and seven latent budgets.">
+    <span class="enlarge-label" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6m-3-3v6"/></svg>Enlarge</span>
+  </a>
+  <figcaption><strong>Length × complexity heatmaps.</strong> Existing methods only scale in the shallow lower-left regime (K ≤ 30, C1–C2) and stagnate or degrade at high complexity (C3–C5, K ≥ 100), whereas SCALER unlocks substantial gains on C4–C5 as latent length increases.</figcaption>
+</figure>
+    <div class="subsection-heading"><h3>Genuine visual semantics vs. meaningless padding</h3><p>Replacing generated latents with equal-length padding probes their causal semantic contribution across latent budgets.</p></div>
+<figure class="paper-figure" id="figure-filling">
+  <a class="figure-link" href="assets/filling-full.webp" data-zoom data-title="Latent length scaling and meaningless padding" aria-label="Enlarge: Latent length scaling and meaningless padding">
+    <img src="assets/filling.webp" width="2200" height="449" loading="lazy" decoding="async" alt="Accuracy curves on V*Bench, MME-RealWorld-Lite, and VisualPuzzles comparing generated latents with equal-length meaningless padding.">
+    <span class="enlarge-label" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6m-3-3v6"/></svg>Enlarge</span>
+  </a>
+  <figcaption><strong>Latent-length scaling and padding interventions.</strong> Solid curves denote normal inference; dashed curves replace generated latents with meaningless padding. Restoring spatial resolution (K ≥ 100 to full length) yields sustained gains and a wide semantic margin.</figcaption>
+</figure>
+  </section>
+
+  <section class="section section-tinted" id="visualization">
+    <div class="container">
+      <div class="section-title"><p class="eyebrow">Visualization</p><h2>What changes when the model sees more?</h2><p>Qualitative case studies and cross-modal attention visualizations across latent token budgets. Select any figure to inspect at full resolution.</p></div>
+      <div class="subsection-heading first"><h3>From coarse cues to fine-grained evidence</h3><p>Scaling the latent token budget preserves fine-grained spatial details needed for complete fine-print price comparison and overlapping instance separation.</p></div>
+<figure class="paper-figure" id="figure-case">
+  <a class="figure-link" href="assets/case-full.webp" data-zoom data-title="Qualitative case studies across latent budgets" aria-label="Enlarge: Qualitative case studies across latent budgets">
+    <img src="assets/case.webp" width="2200" height="1607" loading="lazy" decoding="async" alt="Paper case studies: menu-price comparison improves from an incorrect B at K=0 to correct D at K=300; bicycle counting improves from incorrect A at K=0 to correct C at K=1000.">
+    <span class="enlarge-label" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6m-3-3v6"/></svg>Enlarge</span>
+  </a>
+  <figcaption><strong>Menu price comparison and overlapping bicycle counting.</strong> Top: K=300 enables complete fine-print comparison across all side-dish prices (MME-RealWorld-Lite). Bottom: K=1,000 separates three overlapping bicycles near the building entrance (HRBench-8K).</figcaption>
+</figure>
+      <div class="subsection-heading"><h3>Shifting attention from salient distractors to fine-grained targets</h3><p>High-resolution auxiliary visual latents shift Phase-2 cross-modal attention from foreground distractors and diffuse scanning onto small, task-relevant targets.</p></div>
+<figure class="paper-figure" id="figure-case-attn">
+  <a class="figure-link" href="assets/case-attn-full.webp" data-zoom data-title="Visual attention before and after auxiliary generation" aria-label="Enlarge: Visual attention before and after auxiliary generation">
+    <img src="assets/case-attn.webp" width="2200" height="1043" loading="lazy" decoding="async" alt="Paper attention maps: truck localization with K=0 versus K=300 on MME-RealWorld-Lite, and baby carriage position relative to a cone with K=3 versus K=1000 on V*Bench.">
+    <span class="enlarge-label" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6m-3-3v6"/></svg>Enlarge</span>
+  </a>
+  <figcaption><strong>Cross-modal attention before and after auxiliary generation.</strong> Top: rejecting salient passenger-bus distractors to localize a small truck in the upper-left corner (MME-RealWorld-Lite). Bottom: converging diffuse attention onto the orange cone and baby carriage (V*Bench).</figcaption>
+</figure>
+    </div>
+  </section>
+
+  <section class="section container supplementary-section" id="supplementary">
+    <details class="supplementary">
+      <summary><span><strong>Additional analyses</strong><span>Detransformer architecture study and extended padding controls</span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="supplementary-content">
+        <div class="subsection-heading first"><h3>Detransformer architecture and hidden-layer selection</h3><p>Two-layer bottleneck Transformer vs. MLP across candidate extraction layers ℓ ∈ {5, 10, 15, 20, 25, max}, evaluated via similarity loss, related rate, and relevance score.</p></div>
+<figure class="paper-figure" id="figure-preliminary">
+  <a class="figure-link" href="assets/preliminary-full.webp" data-zoom data-title="Detransformer architecture and hidden layer selection" aria-label="Enlarge: Detransformer architecture and hidden layer selection">
+    <img src="assets/preliminary.webp" width="2200" height="632" loading="lazy" decoding="async" alt="Supplementary curves comparing transformer and MLP detransformers at different hidden layers using similarity loss, related rate, and relevance score.">
+    <span class="enlarge-label" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6m-3-3v6"/></svg>Enlarge</span>
+  </a>
+  <figcaption><strong>Architecture and hidden-layer analysis.</strong> The two-layer Transformer detransformer at layer ℓ=20 achieves near-1.0 Related Rate and high semantic relevance while preserving downstream text representations.</figcaption>
+</figure>
+        <div class="subsection-heading"><h3>Extended meaningless padding comparisons</h3><p>Length scaling and meaningless padding interventions for LVR, LASER, and HyLaR alongside SCALER across V*Bench, MME-RealWorld-Lite, and VisualPuzzles.</p></div>
+<figure class="paper-figure" id="figure-filling-supp">
+  <a class="figure-link" href="assets/filling-supp-full.webp" data-zoom data-title="Additional latent length and padding experiments" aria-label="Enlarge: Additional latent length and padding experiments">
+    <img src="assets/filling-supp.webp" width="2200" height="449" loading="lazy" decoding="async" alt="Supplementary latent-length curves and padding controls for LVR, LASER, HyLaR, and SCALER across three benchmarks.">
+    <span class="enlarge-label" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6.5"/><path d="m15 15 5 5M7 10h6m-3-3v6"/></svg>Enlarge</span>
+  </a>
+  <figcaption><strong>Extended padding experiments.</strong> Solid curves denote normal inference; dashed curves replace generated latents with meaningless padding.</figcaption>
+</figure>
+      </div>
+    </details>
+  </section>
+
+  <section class="section container release-section" id="code">
+    <div class="section-title"><p class="eyebrow">Code &amp; Models</p><h2>Run SCALER inference and evaluation</h2><p>Standalone inference and five-benchmark evaluation in lmms-eval are available in our GitHub repository. <strong>Training code &amp; Model Checkpoints will be released soon.</strong></p></div>
+    <div class="code-box"><div class="code-heading"><span>Run the included dog example</span><button class="copy-button" data-copy="quickstart" type="button">Copy</button></div><pre id="quickstart"><code>python inference/run.py \
+  --model /path/to/checkpoint \
+  --case inference/examples/dog.json \
+  --output outputs/dog.json</code></pre></div>
+    <div class="release-links"><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/blob/main/inference/README.md">Inference guide</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/blob/main/eval/README.md">Evaluation guide</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/tree/main/inference/examples">Runnable examples</a></div>
+  </section>
+
+  <section class="section container citation-section" id="citation">
+    <div class="section-title"><h2>Citation</h2><p>If you find SCALER useful for your research, please consider citing our work:</p></div>
+    <div class="code-box"><div class="code-heading"><span>BibTeX</span><button class="copy-button" data-copy="citation-code" type="button">Copy</button></div><pre id="citation-code">@article{wang2026scaler,
+  title   = {SCALER: Breaking the Latent Scaling Bottleneck
+             via Single-Pass Context-Anchored Latent
+             Visual Reasoning},
+  author  = {Chenfeng Wang and Wei Zhai and Wei He and
+             Xuhan Zhu and Chunpeng Zhou and Song Yan and
+             Qizhen Li and Zeyu Zhang and Shuai Guo and
+             Yufei Zheng and Chengjun Yu and Fan Lu and
+             Yang Cao and Pengfei Yu and Zheng-Jun Zha},
+  journal = {arXiv preprint},
+  year    = {2026},
+  url     = {https://bonjour-codedev.github.io/SCALER/}
+}</pre></div>
+  </section>
+</main>
+<footer class="footer"><div class="container"><a class="brand" href="#main">SCALER</a><p>Single-Pass Context-Anchored Latent Visual Reasoning</p><div><a href="https://github.com/Bonjour-CodeDev/SCALER-Code">GitHub</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/issues">Issues</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/blob/main/THIRD_PARTY_NOTICES.md">Notices</a></div></div></footer>
+
+<dialog class="figure-viewer" id="figure-viewer" aria-labelledby="viewer-title">
+  <div class="viewer-toolbar"><h2 id="viewer-title">Paper figure</h2><div class="viewer-controls"><button type="button" id="zoom-out" aria-label="Zoom out">−</button><output id="zoom-level" aria-live="polite">100%</output><button type="button" id="zoom-in" aria-label="Zoom in">+</button><button type="button" id="zoom-fit">Fit</button><button type="button" id="zoom-actual">100%</button><button type="button" class="viewer-close" id="viewer-close" aria-label="Close figure viewer">×</button></div></div>
+  <div class="viewer-stage" id="viewer-stage"><img id="viewer-image" alt=""></div>
+  <p class="viewer-help">Scroll to explore an enlarged figure. Press Esc to close.</p>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

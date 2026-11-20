@@ -1,0 +1,46 @@
+name: Validate static site
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: scaler-site-review
+  cancel-in-progress: true
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: node --check SCALER/app.js
+      - name: Check links and manuscript figures
+        run: python3 tools/check_site.py
+  browser-review:
+    needs: validate
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Review desktop, mobile, and figure zoom
+        run: python3 tools/browser_review.py --output "$RUNNER_TEMP/scaler-browser-review"
+      - name: Save review images outside the published branch
+        if: always()
+        run: |
+          if [ ! -f "$RUNNER_TEMP/scaler-browser-review/report.json" ]; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin scaler-preview >/dev/null; then
+            git fetch origin scaler-preview
+            git worktree add --detach "$RUNNER_TEMP/scaler-preview-repo" FETCH_HEAD
+          else
+            git worktree add --detach "$RUNNER_TEMP/scaler-preview-repo" HEAD
+            git -C "$RUNNER_TEMP/scaler-preview-repo" checkout --orphan scaler-preview
+            git -C "$RUNNER_TEMP/scaler-preview-repo" rm -rf .
+          fi
+          cp "$RUNNER_TEMP/scaler-browser-review/"* "$RUNNER_TEMP/scaler-preview-repo/"
+          git -C "$RUNNER_TEMP/scaler-preview-repo" add .
+          git -C "$RUNNER_TEMP/scaler-preview-repo" commit -m "Browser review for $GITHUB_SHA"
+          git -C "$RUNNER_TEMP/scaler-preview-repo" push origin HEAD:scaler-preview
