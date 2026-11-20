@@ -1,0 +1,61 @@
+{
+  "commit": "98f2c5b5f50579e687f3a95088d102e836ccbdcd",
+  "checks": [
+    "All nine manuscript figures load",
+    {
+      "viewport": [
+        1024,
+        900
+      ],
+      "horizontal_overflow": false
+    },
+    {
+      "viewport": [
+        1440,
+        1000
+      ],
+      "horizontal_overflow": false
+    },
+    "Figure viewer: fit, actual size, zoom, Escape, focus restoration, scroll restoration",
+    {
+      "viewport": [
+        768,
+        900
+      ],
+      "horizontal_overflow": false
+    },
+    {
+      "viewport": [
+        390,
+        900
+      ],
+      "horizontal_overflow": false
+    },
+    {
+      "viewport": [
+        320,
+        900
+      ],
+      "horizontal_overflow": false
+    },
+    "No severe browser console errors"
+  ],
+  "screenshots": [
+    "laptop-hero.jpg",
+    "desktop-hero.jpg",
+    "desktop-citation.jpg",
+    "desktop-method.jpg",
+    "desktop-results.jpg",
+    "desktop-case.jpg",
+    "desktop-attention.jpg",
+    "desktop-viewer.jpg",
+    "desktop-supplementary.jpg",
+    "viewport-768.jpg",
+    "mobile-hero.jpg",
+    "mobile-case.jpg",
+    "mobile-viewer.jpg",
+    "viewport-320.jpg"
+  ],
+  "browser": "157.0.8103.78",
+  "status": "passed"
+}
