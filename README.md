@@ -14,7 +14,7 @@ python3 -m http.server 8080
 - `SCALER/app.js`: accessible figure viewer, zoom controls, navigation, and copy buttons.
 - `SCALER/assets/`: nine rendered figures, high-resolution versions, and site artwork.
 
-The page presents the motivation, single-pass inference pipeline, three-stage SFT + ALPO training framework, task-complexity heatmaps, latent-length scaling curves, qualitative case studies, attention visualizations, and supplementary analyses. Official code and runnable examples are available in [SCALER-Code](https://github.com/Bonjour-CodeDev/SCALER-Code). **Training code & Model Checkpoints will be released soon.**
+The page presents the motivation, single-pass inference pipeline, three-stage SFT + ALPO training framework, task-complexity heatmaps, latent-length scaling curves, qualitative case studies, attention visualizations, and supplementary analyses. Read our paper on [arXiv](https://arxiv.org/pdf/2605.12163). Official code and runnable examples are available in [SCALER-Code](https://github.com/Bonjour-CodeDev/SCALER-Code). **Training code & Model Checkpoints will be released soon.**
 
 ```bash
 python3 tools/check_site.py

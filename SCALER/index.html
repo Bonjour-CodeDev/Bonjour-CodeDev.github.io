@@ -23,7 +23,7 @@
   <nav class="nav container" aria-label="Main navigation">
     <a class="brand" href="#main" aria-label="SCALER home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 6h22v6H11v5H5zm22 20H5v-6h16v-5h6z"/></svg>SCALER</a>
     <div class="nav-links"><a href="#method">Method</a><a href="#results">Results</a><a href="#visualization">Visualization</a><a href="#citation">Citation</a></div>
-    <a class="nav-code" href="https://github.com/Bonjour-CodeDev/SCALER-Code" aria-label="SCALER code on GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 20"/></svg><span>Code</span></a>
+    <div class="nav-actions"><a class="nav-code" href="https://arxiv.org/pdf/2605.12163" aria-label="SCALER paper on arXiv"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg><span>Paper</span></a><a class="nav-code" href="https://github.com/Bonjour-CodeDev/SCALER-Code" aria-label="SCALER code on GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 20"/></svg><span>Code</span></a></div>
   </nav>
 </header>
 <main id="main">
@@ -172,27 +172,23 @@
   --model /path/to/checkpoint \
   --case inference/examples/dog.json \
   --output outputs/dog.json</code></pre></div>
-    <div class="release-links"><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/blob/main/inference/README.md">Inference guide</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/blob/main/eval/README.md">Evaluation guide</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/tree/main/inference/examples">Runnable examples</a></div>
+    <div class="release-links"><a href="https://arxiv.org/pdf/2605.12163">Paper (PDF)</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/blob/main/inference/README.md">Inference guide</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/blob/main/eval/README.md">Evaluation guide</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/tree/main/inference/examples">Runnable examples</a></div>
   </section>
 
   <section class="section container citation-section" id="citation">
     <div class="section-title"><h2>Citation</h2><p>If you find SCALER useful for your research, please consider citing our work:</p></div>
-    <div class="code-box"><div class="code-heading"><span>BibTeX</span><button class="copy-button" data-copy="citation-code" type="button">Copy</button></div><pre id="citation-code">@article{wang2026scaler,
-  title   = {SCALER: Breaking the Latent Scaling Bottleneck
-             via Single-Pass Context-Anchored Latent
-             Visual Reasoning},
-  author  = {Chenfeng Wang and Wei Zhai and Wei He and
-             Xuhan Zhu and Chunpeng Zhou and Song Yan and
-             Qizhen Li and Zeyu Zhang and Shuai Guo and
-             Yufei Zheng and Chengjun Yu and Fan Lu and
-             Yang Cao and Pengfei Yu and Zheng-Jun Zha},
-  journal = {arXiv preprint},
-  year    = {2026},
-  url     = {https://bonjour-codedev.github.io/SCALER/}
+    <div class="code-box"><div class="code-heading"><span>BibTeX</span><button class="copy-button" data-copy="citation-code" type="button">Copy</button></div><pre id="citation-code">@misc{wang2026scalerbreakinglatentscaling,
+      title={SCALER: Breaking the Latent Scaling Bottleneck via Single-Pass Context-Anchored Latent Visual Reasoning}, 
+      author={Chenfeng Wang and Wei Zhai and Wei He and Xuhan Zhu and Chunpeng Zhou and Song Yan and Qizhen Li and Zeyu Zhang and Shuai Guo and Yufei Zheng and Chengjun Yu and Fan Lu and Yang Cao and Pengfei Yu and Zheng-Jun Zha},
+      year={2026},
+      eprint={2605.12163},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2605.12163}, 
 }</pre></div>
   </section>
 </main>
-<footer class="footer"><div class="container"><a class="brand" href="#main">SCALER</a><p>Single-Pass Context-Anchored Latent Visual Reasoning</p><div><a href="https://github.com/Bonjour-CodeDev/SCALER-Code">GitHub</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/issues">Issues</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/blob/main/THIRD_PARTY_NOTICES.md">Notices</a></div></div></footer>
+<footer class="footer"><div class="container"><a class="brand" href="#main">SCALER</a><p>Single-Pass Context-Anchored Latent Visual Reasoning</p><div><a href="https://arxiv.org/pdf/2605.12163">Paper</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code">GitHub</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/issues">Issues</a><a href="https://github.com/Bonjour-CodeDev/SCALER-Code/blob/main/THIRD_PARTY_NOTICES.md">Notices</a></div></div></footer>
 
 <dialog class="figure-viewer" id="figure-viewer" aria-labelledby="viewer-title">
   <div class="viewer-toolbar"><h2 id="viewer-title">Paper figure</h2><div class="viewer-controls"><button type="button" id="zoom-out" aria-label="Zoom out">−</button><output id="zoom-level" aria-live="polite">100%</output><button type="button" id="zoom-in" aria-label="Zoom in">+</button><button type="button" id="zoom-fit">Fit</button><button type="button" id="zoom-actual">100%</button><button type="button" class="viewer-close" id="viewer-close" aria-label="Close figure viewer">×</button></div></div>
